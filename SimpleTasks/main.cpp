@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 
 /**
@@ -79,9 +80,33 @@ Nod()
 }
 
 
+/**
+* @brief Перевод числа из десятичной системы в двочную.
+*/
+void
+DecToBin()
+{
+   int dec;
+   std::cin >> dec;
+
+   std::vector<int> bin;
+   while (dec)
+   {
+      bin.push_back(dec % 2);
+      dec = dec / 2;
+   }
+
+   std::reverse(bin.begin(), bin.end());   
+
+   for (auto item : bin)
+   {
+      std::cout << item;
+   }
+}
+
 int main()
 {
-   Nod();   
+   DecToBin();   
 
    return 0;
 }
