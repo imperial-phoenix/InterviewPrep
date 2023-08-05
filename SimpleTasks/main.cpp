@@ -54,9 +54,34 @@ SolveQuadraticEquation()
 }
 
 
+/**
+* @brief Находит наибольший общий делитель двух чисел.
+*/
+void
+Nod()
+{
+   int a, b;
+   std::cin >> a >> b;
+
+   while (a > 0 && b > 0)
+   {
+      if (a > b)
+      {
+         a = a % b;
+      }
+      else
+      {
+         b = b % a;
+      }
+   }
+
+   std::cout << a + b << std::endl;
+}
+
+
 int main()
 {
-   SolveQuadraticEquation();
+   Nod();   
 
    return 0;
 }
