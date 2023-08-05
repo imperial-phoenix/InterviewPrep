@@ -104,9 +104,31 @@ DecToBin()
    }
 }
 
+
+/**
+* @brief Вычисление факториала
+*/
+int
+Factorial(
+   int Number)
+{
+   if (Number <= 1) { return 1; }
+
+   int res = 1;
+   for (int i = 2; i <= Number; ++i)
+   {
+      res *= i;
+   }
+
+   return res;
+}
+
+
 int main()
 {
-   DecToBin();   
+   int a;
+   std::cin >> a;
+   std::cout << Factorial(a) << std::endl;   
 
    return 0;
 }
