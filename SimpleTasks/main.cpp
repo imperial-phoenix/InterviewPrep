@@ -124,11 +124,33 @@ Factorial(
 }
 
 
+/**
+* @brief Проверяет является ли слово палиндромом
+*/
+bool
+IsPalindrom(
+   std::string Str)
+{
+   bool res = true;
+
+   for (size_t i = 0; i < Str.size() / 2; ++i)
+   {
+      if (Str[i] != Str[Str.size() - i - 1])
+      {
+         res = false;
+         break;
+      }
+   }
+
+   return res;
+}
+
+
 int main()
 {
-   int a;
-   std::cin >> a;
-   std::cout << Factorial(a) << std::endl;   
+   std::string str;
+   std::cin >> str;
+   std::cout << IsPalindrom(str) << std::endl;   
 
    return 0;
 }
