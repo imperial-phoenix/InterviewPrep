@@ -17,7 +17,7 @@ SolveQuadraticEquation()
     * 3) Если D < 0, то уравнение не имеет корней.
     * 4) Если D = 0, то уравнение имеет два одинаковых корня.
     * 5) Если D > 0, то уравнение имеет два корня.
-   */  
+   */
 
    double a, b, c;
    std::cin >> a >> b >> c;
@@ -44,14 +44,14 @@ SolveQuadraticEquation()
       else if (d > 0)
       {
          std::cout << (-b + std::sqrt(d)) / (2 * a) <<
-               " " << (-b - std::sqrt(d)) / (2 * a) << std::endl;   
+               " " << (-b - std::sqrt(d)) / (2 * a) << std::endl;
       }
       else
       {
          //std::cout << "Уравнение не имеет действительных корней." << std::endl;
       }
    }
-   
+
 }
 
 
@@ -96,7 +96,7 @@ DecToBin()
       dec = dec / 2;
    }
 
-   std::reverse(bin.begin(), bin.end());   
+   std::reverse(bin.begin(), bin.end());
 
    for (auto item : bin)
    {
@@ -106,7 +106,7 @@ DecToBin()
 
 
 /**
-* @brief Вычисление факториала
+* @brief Вычисление факториала.
 */
 int
 Factorial(
@@ -125,7 +125,7 @@ Factorial(
 
 
 /**
-* @brief Проверяет является ли слово палиндромом
+* @brief Проверяет является ли слово палиндромом.
 */
 bool
 IsPalindrom(
@@ -146,11 +146,112 @@ IsPalindrom(
 }
 
 
+void
+YandexQueue()
+{
+   int q = 0;
+   std::cin >> q;
+
+   std::vector<bool> queue;
+   
+   for (int i = 0; i < q; ++i)
+   {
+      std::string operationCode;
+      std::cin >> operationCode;
+
+      if ("COME" == operationCode)
+      {
+         int size = 0;
+         std::cin >> size;
+
+         queue.resize(queue.size() + size, false);
+      }
+      else if ("WORRY" == operationCode)
+      {
+         int index = 0;
+         std::cin >> index;
+         queue[index] = true;
+      }
+      else if ("QUIET" == operationCode)
+      {
+         int index = 0;
+         std::cin >> index;
+         queue[index] = false;
+      }
+      else if ("WORRY_COUNT" == operationCode)
+      {
+         std::cout << std::count(std::begin(queue), std::end(queue), true) << std::endl;
+      }
+   }
+
+}
+
+
+void
+TaskManager()
+{
+   std::vector<int> daysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+   int indexCurrentMonth = 0;
+   int daysInCurrentMonth = daysInMonth[indexCurrentMonth];
+   std::vector<std::vector<std::string>> toDoList(daysInCurrentMonth);
+
+   int q = 0;
+   std::cin >> q;
+
+   for (int i = 0; i < q; ++i)
+   {
+      std::string operationCode;
+      std::cin >> operationCode;
+
+      if ("ADD" == operationCode)
+      {
+         int dayIndex = 0;
+         std::cin >> dayIndex;
+         --dayIndex;
+
+         std::string task;
+         std::cin >> task;
+
+         toDoList[dayIndex].push_back(task);
+      }
+      else if ("DUMP" == operationCode)
+      {
+         int dayIndex = 0;
+         std::cin >> dayIndex;
+         --dayIndex;
+
+         std::cout << toDoList[dayIndex].size() << " ";
+         for (auto deal : toDoList[dayIndex])
+         {
+            std::cout << deal << " ";
+         }
+         std::cout << std::endl;
+      }
+      else if ("NEXT" == operationCode)
+      {
+         indexCurrentMonth = (indexCurrentMonth + 1 ) % 12;
+         int daysInNextMonth = daysInMonth[indexCurrentMonth];
+
+         if (daysInNextMonth < daysInCurrentMonth)
+         {
+            for (int i = daysInNextMonth; i < daysInCurrentMonth; ++i)
+            {
+               toDoList[daysInNextMonth - 1].insert(toDoList[daysInNextMonth - 1].end(), toDoList[i].begin(), toDoList[i].end());
+            }
+         }
+
+         toDoList.resize(daysInNextMonth);
+
+         daysInCurrentMonth = daysInNextMonth;
+      }
+   }
+
+}
+
+
 int main()
 {
-   std::string str;
-   std::cin >> str;
-   std::cout << IsPalindrom(str) << std::endl;   
+   TaskManager();
 
    return 0;
 }
