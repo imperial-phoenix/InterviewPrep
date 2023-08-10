@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <map>
 #include <vector>
 
 
@@ -249,9 +250,113 @@ TaskManager()
 }
 
 
+/**
+ * @brief Задание по программированию «Автобусные остановки — 1».
+*/
+void BusManager1()
+{
+   std::map<std::string, std::vector<std::string>> busStops; // остановки автобуса
+   std::map<std::string, std::vector<std::string>> stopBuses; // автобусы остановки
+
+   int q = 0;
+   std::cin >> q;
+
+   for (int i = 0; i < q; ++i)
+   {
+      std::string operationCode;
+      std::cin >> operationCode;
+
+      if ("NEW_BUS" == operationCode)
+      {
+         std::string bus;
+         int stopCount;
+
+         std::cin >> bus >> stopCount;
+         for (int i = 0; i < stopCount; ++i)
+         {
+            std::string stop;
+            std::cin >> stop;
+
+            busStops[bus].push_back(stop);
+            stopBuses[stop].push_back(bus);
+         }
+      }
+      else if ("BUSES_FOR_STOP" == operationCode)
+      {
+         std::string stop;
+         std::cin >> stop;
+
+         if (stopBuses.count(stop) == 0)
+         {
+            std::cout << "No stop" << std::endl;
+         }
+         else
+         {
+            for (const auto& bus : stopBuses[stop])
+            {
+               if (stopBuses[stop].back() != bus)
+                  std::cout << bus << " ";
+               else
+                  std::cout << bus;
+            }
+            std::cout << std::endl;
+         }
+      }
+      else if ("STOPS_FOR_BUS" == operationCode)
+      {
+         std::string bus;
+         std::cin >> bus;
+
+         if (busStops.count(bus) == 0)
+         {
+            std::cout << "No bus" << std::endl;
+         }
+         else
+         {
+            for (const auto& stop : busStops[bus])
+            {
+               std::cout << "Stop " << stop << ":";
+
+               if (stopBuses[stop].size() == 1)
+               {
+                  std::cout << " no interchange" << std::endl;
+               }
+               else
+               {
+                  for (const auto& stopBus : stopBuses[stop])
+                  {
+                     if (bus != stopBus)
+                        std::cout << " " << stopBus;
+                  }
+                  std::cout << std::endl;
+               }
+            }
+         }
+      }
+      else if ("ALL_BUSES" == operationCode)
+      {
+         if (busStops.empty())
+         {
+            std::cout << "No buses" << std::endl;
+         }
+         else
+         {
+            for (const auto& bus : busStops)
+            {
+               std::cout << "Bus " << bus.first << ":";
+               for (const auto& stop : bus.second)
+                  std::cout << " " << stop;
+               std::cout << std::endl;
+            }
+         }
+      }
+   }
+}
+
+
 int main()
 {
-   TaskManager();
+   
 
    return 0;
 }
