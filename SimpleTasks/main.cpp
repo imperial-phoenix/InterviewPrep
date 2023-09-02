@@ -355,22 +355,31 @@ void BusManager1()
 }
 
 
-// если имя неизвестно, возвращает пустую строку
-std::string FindNameByYear(const std::map<int, std::string>& names, int year) {
-  std::string name;  // изначально имя неизвестно
-  
-  // перебираем всю историю по возрастанию ключа словаря, то есть в хронологическом порядке
-  for (const auto& item : names) {
-    // если очередной год не больше данного, обновляем имя
-    if (item.first <= year) {
-      name = item.second;
-    } else {
-      // иначе пора остановиться, так как эта запись и все последующие относятся к будущему
-      break;
-    }
-  }
-  
-  return name;
+///////////////////////////////////////////////////////////////////////////////
+///            Задание по программированию «Имена и фамилии — 2»            ///
+///////////////////////////////////////////////////////////////////////////////
+
+// Если имя (фамилия) неизвестно, возвращает пустую строку
+std::string FindNameByYear(const std::map<int, std::string>& names, int year)
+{
+  std::string name; // изначально имя неизвестно
+
+   // перебираем всю историю по возрастанию ключа словаря, то есть в хронологическом порядке
+   for (const auto& item : names)
+   {
+      // если очередной год не больше данного, обновляем имя
+      if (item.first <= year)
+      {
+         name = item.second;
+      }
+      else
+      {
+         // иначе пора остановиться, так как эта запись и все последующие относятся к будущему
+         break;
+      }
+   }
+
+   return name;
 }
 
 
@@ -387,29 +396,70 @@ std::string GetNameWithHistory(const std::map<int, std::string>& names, int year
          break;
    }
 
+   if (all_names.empty())
+   {
+      return "";
+   }
+
+   // Удаляем подряд стоящие одинаковые имена
    auto last = std::unique(all_names.begin(), all_names.end());
    all_names.erase(last, all_names.end());
 
+   // if (all_names.size() > 1)
+   // {
+   //    auto it = all_names.rbegin();
+   //    name = *it++;
+   //    name += " (";
+   //    for (; it != all_names.rend(); ++it)
+   //    {
+   //       if (it + 1 != all_names.rend())
+   //          name += *it + ", ";
+   //       else
+   //          name += *it;
+   //    }
+   //    name += ")";
+   // }
+   // else if (all_names.size() == 1)
+   // {
+   //    name = all_names.front();
+   // }
+
+   std::reverse(all_names.begin(), all_names.end());
+   name = all_names[0];
+
+   for (int i = 1; i < all_names.size(); ++i)
+   {
+      if (1 == i)
+      {
+         name += " (";
+      }
+      else
+      {
+         name += ", ";
+      }
+
+      name += all_names[i];
+   }
+
    if (all_names.size() > 1)
    {
-      auto it = all_names.rbegin();
-      name = *it++;
-      name += " (";
-      for (; it != all_names.rend(); ++it)
-      {
-         if (it + 1 != all_names.rend())
-            name += *it + ", ";
-         else
-            name += *it;
-      }
       name += ")";
-   }
-   else if (all_names.size() == 1)
-   {
-      name = all_names.front();
    }
 
    return name;
+}
+
+
+std::string BuildFullName(const std::string& first_name, const std::string& last_name) {
+  if (first_name.empty() && last_name.empty()) {
+    return "Incognito";
+  } else if (first_name.empty()) {
+    return last_name + " with unknown first name";
+  } else if (last_name.empty()) {
+    return first_name + " with unknown last name";
+  } else {
+    return first_name + " " + last_name;
+  }
 }
 
 
@@ -421,45 +471,52 @@ public:
       names[year] = first_name;
    }
 
+
    void ChangeLastName(int year, const std::string& last_name)
    {
       last_names[year] = last_name;
    }
+
 
    std::string GetFullName(int year)
    {
       std::string current_first_name = FindNameByYear(names, year);
       std::string current_last_name = FindNameByYear(last_names, year);
 
-      std::string full_name;
-      if (current_first_name.empty() && current_last_name.empty())
-         full_name = "Incognito";
-      else if (current_first_name.empty())
-         full_name = current_last_name + " with unknown first name";
-      else if (current_last_name.empty())
-         full_name = current_first_name + " with unknown last name";
-      else
-         full_name = current_first_name + " " + current_last_name;
+      // std::string full_name;
+      // if (current_first_name.empty() && current_last_name.empty())
+      //    full_name = "Incognito";
+      // else if (current_first_name.empty())
+      //    full_name = current_last_name + " with unknown first name";
+      // else if (current_last_name.empty())
+      //    full_name = current_first_name + " with unknown last name";
+      // else
+      //    full_name = current_first_name + " " + current_last_name;
 
-      return full_name;
+      // return full_name;
+
+      return BuildFullName(current_first_name, current_last_name);
    }
+
 
    std::string GetFullNameWithHistory(int year)
    {
       std::string current_first_name = GetNameWithHistory(names, year);
       std::string current_last_name = GetNameWithHistory(last_names, year);
 
-      std::string full_name;
-      if (current_first_name.empty() && current_last_name.empty())
-         full_name = "Incognito";
-      else if (current_first_name.empty())
-         full_name = current_last_name + " with unknown first name";
-      else if (current_last_name.empty())
-         full_name = current_first_name + " with unknown last name";
-      else
-         full_name = current_first_name + " " + current_last_name;
+      // std::string full_name;
+      // if (current_first_name.empty() && current_last_name.empty())
+      //    full_name = "Incognito";
+      // else if (current_first_name.empty())
+      //    full_name = current_last_name + " with unknown first name";
+      // else if (current_last_name.empty())
+      //    full_name = current_first_name + " with unknown last name";
+      // else
+      //    full_name = current_first_name + " " + current_last_name;
 
-      return full_name;
+      // return full_name;
+
+      return BuildFullName(current_first_name, current_last_name);
    }
 
 private:
@@ -469,20 +526,19 @@ private:
 
 
 int main(){
-    Person person;
+   Person person;
 
-    int year = 1;   
-    person.ChangeLastName(year, std::to_string(year)+"_last");
-    std::cout << "year: " << year << '\n';
-    std::cout << person.GetFullNameWithHistory(year) << '\n';
-    std::cout << person.GetFullName(year) << '\n';
+   int year = 1;
+   person.ChangeLastName(year, std::to_string(year)+"_last");
+   std::cout << "year: " << year << '\n';
+   std::cout << person.GetFullNameWithHistory(year) << '\n';
+   std::cout << person.GetFullName(year) << '\n';
 
-    year = 2;   
-    person.ChangeLastName(year, std::to_string(year)+"_last");
-    std::cout << "year: " << year << '\n';
-    std::cout << person.GetFullNameWithHistory(year) << '\n';
-    std::cout << person.GetFullName(year) << '\n';
+   year = 2;
+   person.ChangeLastName(year, std::to_string(year)+"_last");
+   std::cout << "year: " << year << '\n';
+   std::cout << person.GetFullNameWithHistory(year) << '\n';
+   std::cout << person.GetFullName(year) << '\n';
 
-
-    return 0;
+   return 0;
 }
