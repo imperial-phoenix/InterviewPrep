@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <map>
 #include <set>
 #include <vector>
@@ -60,12 +62,9 @@ SolveQuadraticEquation()
 /**
 * @brief Находит наибольший общий делитель двух чисел.
 */
-void
-Nod()
+int
+Nod(int a, int b)
 {
-   int a, b;
-   std::cin >> a >> b;
-
    while (a > 0 && b > 0)
    {
       if (a > b)
@@ -78,7 +77,7 @@ Nod()
       }
    }
 
-   std::cout << a + b << std::endl;
+   return a + b;
 }
 
 
@@ -466,20 +465,41 @@ std::string BuildFullName(const std::string& first_name, const std::string& last
 class Person
 {
 public:
+   Person(const std::string& FirstName, const std::string& LastName, int BirthYear)
+   {
+      birthYear = BirthYear;
+      names[BirthYear] = FirstName;
+      last_names[BirthYear] = LastName;
+   }
+
+
    void ChangeFirstName(int year, const std::string& first_name)
    {
-      names[year] = first_name;
+      if (year >= birthYear)
+      {
+         names[year] = first_name;
+      }
+
    }
 
 
    void ChangeLastName(int year, const std::string& last_name)
    {
-      last_names[year] = last_name;
+      if (year >= birthYear)
+      {
+         last_names[year] = last_name;
+      }
+
    }
 
 
-   std::string GetFullName(int year)
+   std::string GetFullName(int year) const
    {
+      if (year < birthYear)
+      {
+         return "No person";
+      }
+
       std::string current_first_name = FindNameByYear(names, year);
       std::string current_last_name = FindNameByYear(last_names, year);
 
@@ -499,8 +519,13 @@ public:
    }
 
 
-   std::string GetFullNameWithHistory(int year)
+   std::string GetFullNameWithHistory(int year) const
    {
+      if (year < birthYear)
+      {
+         return "No person";
+      }
+
       std::string current_first_name = GetNameWithHistory(names, year);
       std::string current_last_name = GetNameWithHistory(last_names, year);
 
@@ -522,23 +547,264 @@ public:
 private:
    std::map<int, std::string> names;
    std::map<int, std::string> last_names;
+   int birthYear;
 };
 
 
-int main(){
-   Person person;
+struct Specialization
+{
+   explicit Specialization(const std::string& Specialization)
+   {
+      specialization_ = Specialization;
+   }
 
-   int year = 1;
-   person.ChangeLastName(year, std::to_string(year)+"_last");
-   std::cout << "year: " << year << '\n';
-   std::cout << person.GetFullNameWithHistory(year) << '\n';
-   std::cout << person.GetFullName(year) << '\n';
+   std::string specialization_;
+};
 
-   year = 2;
-   person.ChangeLastName(year, std::to_string(year)+"_last");
-   std::cout << "year: " << year << '\n';
-   std::cout << person.GetFullNameWithHistory(year) << '\n';
-   std::cout << person.GetFullName(year) << '\n';
 
-   return 0;
+struct Course
+{
+   explicit Course(const std::string& Course)
+   {
+      course_ = Course;
+   }
+
+   std::string course_;
+};
+
+
+struct Week
+{
+   explicit Week(const std::string& Week)
+   {
+      week_ = Week;
+   }
+
+   std::string week_;
+};
+
+
+struct LectureTitle
+{
+   LectureTitle(const Specialization& Specialization,
+                const Course& Course,
+                const Week& Week) : specialization{Specialization}, course{Course}, week{Week} {}
+
+   Specialization specialization;
+   Course course;
+   Week week;
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+class FunctionPart
+{
+public:
+   FunctionPart(char newOperation, double newValue)
+   {
+      operation = newOperation;
+      value = newValue;
+   }
+
+   double Apply(double sourceValue) const
+   {
+      if ('+' == operation)
+      {
+         return sourceValue + value;
+      }
+      else if ('-' == operation)
+      {
+         return sourceValue - value;
+      }
+      else if ('*' == operation)
+      {
+         return sourceValue * value;
+      }
+      else if ('/' == operation)
+      {
+         return sourceValue / value;
+      }
+   }
+
+   void Invert()
+   {
+      if ('+' == operation)
+      {
+         operation = '-';
+      }
+      else if ('-' == operation)
+      {
+         operation = '+';
+      }
+      else if ('*' == operation)
+      {
+         operation = '/';
+      }
+      else if ('/' == operation)
+      {
+         operation = '*';
+      }
+   }
+
+private:
+   char operation;
+   double value;
+};
+
+
+class Function
+{
+public:
+   void AddPart(char operation, double value)
+   {
+      parts.push_back({operation, value});
+   }
+
+   double Apply(double value) const
+   {
+      for (const FunctionPart& part : parts)
+      {
+         value = part.Apply(value);
+      }
+      return value;
+   }
+
+   void Invert()
+   {
+      for (FunctionPart& part : parts)
+      {
+         part.Invert();
+      }
+
+      std::reverse(parts.begin(), parts.end());
+   }
+
+private:;
+   std::vector<FunctionPart> parts;
+};
+
+
+#include <iostream>
+using namespace std;
+
+class Rational
+{
+public:
+   Rational()
+   {
+      p_ = 0;
+      q_ = 1;
+   }
+
+
+   Rational(int p, int q)
+   {
+      if (p == 0)
+      {
+         q = 1;
+      }
+
+      if (p < 0 && q < 0)
+      {
+         p = abs(p);
+         q = abs(q);
+      }
+      else if (p > 0 && q < 0)
+      {
+         q = abs(q);
+         p = -p;
+      }
+      // if (q < 0)
+      // {
+      //    p = -p;
+      //    q = -q;
+      // }
+
+
+      int nod = Nod(p, q);
+
+      p_ = p / nod;
+      q_ = q / nod;
+   }
+
+
+
+
+   int Numerator() const
+   {
+      return p_;
+   }
+
+
+   int Denominator() const
+   {
+      return q_;
+   }
+
+private:
+   int p_;
+   int q_;
+};
+
+
+int main() {
+    {
+        const Rational r(3, 10);
+        if (r.Numerator() != 3 || r.Denominator() != 10) {
+            cout << "Rational(3, 10) != 3/10" << endl;
+            return 1;
+        }
+    }
+
+    {
+        const Rational r(8, 12);
+        if (r.Numerator() != 2 || r.Denominator() != 3) {
+            cout << "Rational(8, 12) != 2/3" << endl;
+            return 2;
+        }
+    }
+
+    {
+        const Rational r(-4, 6);
+        if (r.Numerator() != -2 || r.Denominator() != 3) {
+            cout << "Rational(-4, 6) != -2/3" << endl;
+            return 3;
+        }
+    }
+
+    {
+        const Rational r(4, -6);
+        if (r.Numerator() != -2 || r.Denominator() != 3) {
+            cout << "Rational(4, -6) != -2/3" << endl;
+            return 3;
+        }
+    }
+
+    {
+        const Rational r(0, 15);
+        if (r.Numerator() != 0 || r.Denominator() != 1) {
+            cout << "Rational(0, 15) != 0/1" << endl;
+            return 4;
+        }
+    }
+
+    {
+        const Rational defaultConstructed;
+        if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
+            cout << "Rational() != 0/1" << endl;
+            return 5;
+        }
+    }
+
+   {
+        const Rational r(-8, 24);
+        if (r.Numerator() != -1 || r.Denominator() != 3) {
+            cout << "Rational(-8, 24) != -1/3" << endl;
+            return 4;
+        }
+    }
+
+    cout << "OK" << endl;
+    return 0;
 }
