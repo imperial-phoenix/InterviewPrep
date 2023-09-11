@@ -17,3 +17,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DEBUG_DIR}/Bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Bin)
 
 add_subdirectory(SimpleTasks)
+add_subdirectory(YandexDb)
