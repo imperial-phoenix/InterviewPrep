@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cmath>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -685,6 +686,8 @@ private:;
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 using namespace std;
 
@@ -693,118 +696,172 @@ class Rational
 public:
    Rational()
    {
-      p_ = 0;
-      q_ = 1;
+      num_ = 0;
+      den_ = 1;
    }
 
 
-   Rational(int p, int q)
+   Rational(int num, int den)
    {
-      if (p == 0)
+      if (0 == den)
       {
-         q = 1;
+         throw std::invalid_argument("Invalid argument");
       }
 
-      if (p < 0 && q < 0)
+      if (num == 0)
       {
-         p = abs(p);
-         q = abs(q);
+         den = 1;
       }
-      else if (p > 0 && q < 0)
+
+      if (den < 0)
       {
-         q = abs(q);
-         p = -p;
+         num = -num;
+         den = -den;
       }
-      // if (q < 0)
-      // {
-      //    p = -p;
-      //    q = -q;
-      // }
 
+      int nod = Nod(abs(num), den);
 
-      int nod = Nod(p, q);
-
-      p_ = p / nod;
-      q_ = q / nod;
+      num_ = num / nod;
+      den_ = den / nod;
    }
-
-
 
 
    int Numerator() const
    {
-      return p_;
+      return num_;
    }
 
 
    int Denominator() const
    {
-      return q_;
+      return den_;
    }
 
 private:
-   int p_;
-   int q_;
+   int num_;
+   int den_;
 };
 
+Rational Reduce(const Rational& rational)
+{
+   int nod = Nod(rational.Numerator(), rational.Denominator());
+
+   return Rational(rational.Numerator() / nod, rational.Denominator() / nod);
+}
+
+
+bool operator==(const Rational& lhs, const Rational& rhs)
+{
+   return (lhs.Denominator() == rhs.Denominator() && lhs.Numerator() == rhs.Numerator());
+}
+
+
+Rational operator+(const Rational& lhs, const Rational& rhs)
+{
+   return Rational(lhs.Numerator() * rhs.Denominator() + rhs.Numerator() * lhs.Denominator(), lhs.Denominator() * rhs.Denominator());
+}
+
+
+Rational operator-(const Rational& lhs, const Rational& rhs)
+{
+   return Rational(lhs.Numerator() * rhs.Denominator() - rhs.Numerator() * lhs.Denominator(), lhs.Denominator() * rhs.Denominator());
+}
+
+
+Rational operator*(const Rational& lhs, const Rational& rhs)
+{
+   return Rational(lhs.Numerator() * rhs.Numerator(), lhs.Denominator() * rhs.Denominator());
+}
+
+Rational operator/(const Rational& lhs, const Rational& rhs)
+{
+   if (rhs.Numerator() == 0)
+   {
+      throw std::domain_error("Division by zero");
+   }
+   return Rational(lhs.Numerator() * rhs.Denominator(), lhs.Denominator() * rhs.Numerator());
+}
+
+
+std::ostream& operator<<(std::ostream& out, const Rational& r)
+{
+   out << r.Numerator() << "/" << r.Denominator();
+   return out;
+}
+
+std::istream& operator>>(std::istream& in, Rational& r)
+{
+   int num;
+   int den;
+   char c;
+   in >> num >> c >> den;
+   if (in && c == '/')
+   {
+      r = Rational(num, den);
+   }
+   // else
+   // {
+   //    throw std::invalid_argument("Invalid argument");
+   // }
+
+   return in;
+}
+
+bool operator<(const Rational& lhs, const Rational& rhs)
+{
+   return (lhs.Numerator() * rhs.Denominator()) < (rhs.Numerator() * lhs.Denominator());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <exception>
+#include <string>
+using namespace std;
+
+string AskTimeServer() {
+    /* Для тестирования повставляйте сюда код, реализующий различное поведение этой функии:
+       * нормальный возврат строкового значения
+       * выброс исключения system_error
+       * выброс другого исключения с сообщением.
+    */
+
+   throw std::runtime_error("Server error");
+}
+
+class TimeServer {
+public:
+    string GetCurrentTime() {
+        /* Реализуйте этот метод:
+            * если AskTimeServer() вернула значение, запишите его в last_fetched_time и верните
+            * если AskTimeServer() бросила исключение system_error, верните текущее значение
+            поля last_fetched_time
+            * если AskTimeServer() бросила другое исключение, пробросьте его дальше.
+        */
+
+      try
+      {
+         last_fetched_time = AskTimeServer();
+      }
+      catch (std::system_error& system_error)
+      {
+         
+      }
+
+      return last_fetched_time;
+    }
+
+private:
+    string last_fetched_time = "00:00:00";
+};
 
 int main() {
-    {
-        const Rational r(3, 10);
-        if (r.Numerator() != 3 || r.Denominator() != 10) {
-            cout << "Rational(3, 10) != 3/10" << endl;
-            return 1;
-        }
+    // Меняя реализацию функции AskTimeServer, убедитесь, что это код работает корректно
+    TimeServer ts;
+    try {
+        cout << ts.GetCurrentTime() << endl;
+    } catch (exception& e) {
+        cout << "Exception got: " << e.what() << endl;
     }
-
-    {
-        const Rational r(8, 12);
-        if (r.Numerator() != 2 || r.Denominator() != 3) {
-            cout << "Rational(8, 12) != 2/3" << endl;
-            return 2;
-        }
-    }
-
-    {
-        const Rational r(-4, 6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(-4, 6) != -2/3" << endl;
-            return 3;
-        }
-    }
-
-    {
-        const Rational r(4, -6);
-        if (r.Numerator() != -2 || r.Denominator() != 3) {
-            cout << "Rational(4, -6) != -2/3" << endl;
-            return 3;
-        }
-    }
-
-    {
-        const Rational r(0, 15);
-        if (r.Numerator() != 0 || r.Denominator() != 1) {
-            cout << "Rational(0, 15) != 0/1" << endl;
-            return 4;
-        }
-    }
-
-    {
-        const Rational defaultConstructed;
-        if (defaultConstructed.Numerator() != 0 || defaultConstructed.Denominator() != 1) {
-            cout << "Rational() != 0/1" << endl;
-            return 5;
-        }
-    }
-
-   {
-        const Rational r(-8, 24);
-        if (r.Numerator() != -1 || r.Denominator() != 3) {
-            cout << "Rational(-8, 24) != -1/3" << endl;
-            return 4;
-        }
-    }
-
-    cout << "OK" << endl;
     return 0;
 }
