@@ -4,16 +4,19 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <map>
 #include <set>
 #include <vector>
+#include <tuple>
+#include <utility>
 
 
 /**
 * @brief Решение квадратного уравнения.
 */
 void
-SolveQuadraticEquation()
+SolveQuadraticEquation(double a, double b, double c)
 {
    /*
     * Алгоритм решения квадратного уравнения:
@@ -23,9 +26,6 @@ SolveQuadraticEquation()
     * 4) Если D = 0, то уравнение имеет два одинаковых корня.
     * 5) Если D > 0, то уравнение имеет два корня.
    */
-
-   double a, b, c;
-   std::cin >> a >> b >> c;
 
    if (0 == a) // линейное уравнение Bx + C = 0
    {
@@ -58,7 +58,6 @@ SolveQuadraticEquation()
    }
 
 }
-
 
 /**
 * @brief Находит наибольший общий делитель двух чисел.
@@ -155,7 +154,7 @@ YandexQueue()
    std::cin >> q;
 
    std::vector<bool> queue;
-   
+
    for (int i = 0; i < q; ++i)
    {
       std::string operationCode;
@@ -845,7 +844,7 @@ public:
       }
       catch (std::system_error& system_error)
       {
-         
+
       }
 
       return last_fetched_time;
@@ -855,13 +854,308 @@ private:
     string last_fetched_time = "00:00:00";
 };
 
-int main() {
-    // Меняя реализацию функции AskTimeServer, убедитесь, что это код работает корректно
-    TimeServer ts;
-    try {
-        cout << ts.GetCurrentTime() << endl;
-    } catch (exception& e) {
-        cout << "Exception got: " << e.what() << endl;
-    }
-    return 0;
+
+/////////////////// Шаблонный вывод контейнеров vector, map ///////////////////
+
+template <typename Container>
+std::string
+Join(Container& C)
+{
+   std::stringstream ss;
+   bool isFirst = true;
+   for (const auto& item : C)
+   {
+      if (!isFirst)
+      {
+         ss << ",";
+      }
+      isFirst = false;
+      ss << item;
+   }
+
+   return ss.str();
+}
+
+
+template <typename T>
+std::ostream& operator<< (std::ostream& Out, const std::vector<T>& V)
+{
+   return Out << "[" << Join(V) << "]";
+}
+
+
+template <typename First, typename Second>
+std::ostream& operator<< (std::ostream& Out, const std::pair<First, Second>& P)
+{
+   return Out << "(" << P.first << ", " << P.second << ")";
+}
+
+
+template <typename Key, typename Value>
+std::ostream& operator<< (std::ostream& Out, const std::map<Key, Value>& M)
+{
+   return Out << "{" << Join(M) << "}";
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+T Sqr(const T& X);
+
+template <typename First, typename Second>
+std::pair<First, Second> Sqr(const std::pair<First, Second>& Pair);
+
+template <typename T>
+std::vector<T> Sqr(const std::vector<T>& Vector);
+
+template <typename Key, typename Value>
+std::map<Key, Value> Sqr(const std::map<Key, Value>& Map);
+
+
+template <typename T>
+T Sqr(const T& X)
+{
+   return X * X;
+}
+
+
+template <typename First, typename Second>
+std::pair<First, Second> Sqr(const std::pair<First, Second>& Pair)
+{
+   return std::make_pair(Sqr(Pair.first), Sqr(Pair.second));
+}
+
+
+template <typename T>
+std::vector<T> Sqr(const std::vector<T>& Vector)
+{
+   std::vector<T> result;
+
+   for (const T& item : Vector)
+   {
+      result.push_back(Sqr(item));
+   }
+
+   return result;
+}
+
+
+template <typename Key, typename Value>
+std::map<Key, Value> Sqr(const std::map<Key, Value>& Map)
+{
+   std::map<Key, Value> result;
+
+   for (const auto& pair : Map)
+   {
+      result[pair.first] = Sqr(pair.second);
+   }
+
+   return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///                            Тестовый фреймворк                           ///
+///////////////////////////////////////////////////////////////////////////////
+
+template <typename T, typename U>
+void
+AssertEqual(
+   const T& t,
+   const U& u,
+   const std::string& hint)
+{
+   if (t != u)
+   {
+      std::ostringstream oss;
+      oss << "Assertion failed: " << t << " != " << u << " hint: " << hint;
+      throw std::runtime_error(oss.str());
+   }
+}
+
+inline void Assert(bool b, const std::string& hint)
+{
+   AssertEqual(b, true, hint);
+}
+
+class TestRunner
+{
+public:
+   template <typename TestFunc>
+   void RunTest(TestFunc func, const std::string& test_name)
+   {
+      try
+      {
+         func();
+         std::cerr << test_name << " OK" << std::endl;
+      }
+      catch (std::runtime_error& ex)
+      {
+         ++fail_count;
+         std::cerr << test_name << " fail: " << ex.what() << std::endl;
+      }
+   }
+
+   ~TestRunner()
+   {
+      if (fail_count > 0)
+      {
+         std::cerr << fail_count << " unit tests failed. Terminate." << std::endl;
+         exit(1);
+      }
+   }
+
+private:
+   int fail_count = 0;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+// Перечислимый тип для статуса задачи
+enum class TaskStatus {
+   NEW,
+   IN_PROGRESS,
+   TESTING,
+   DONE
+};
+
+// Объявляем тип-синоним для map<TaskStatus, int>,
+// позволяющего хранить количество задач каждого статуса
+using TasksInfo = map<TaskStatus, int>;
+
+class TeamTasks {
+public:
+   // Получить статистику по статусам задач конкретного разработчика
+   const TasksInfo& GetPersonTasksInfo(const string& person) const;
+
+   // Добавить новую задачу (в статус NEW) для конкретного разработчика
+   void AddNewTask(const string& person);
+
+   // Обновить статусы по данному количеству задач конкретного разработчика
+   tuple<TasksInfo, TasksInfo>
+   PerformPersonTasks(
+      const string& person,
+      int task_count);
+
+// private:
+   std::map<std::string, TasksInfo> data_;
+};
+
+
+void
+TeamTasks::AddNewTask(
+   const string& person)
+{
+   data_[person][TaskStatus::NEW] += 1;
+}
+
+
+const TasksInfo&
+TeamTasks::GetPersonTasksInfo(
+               const string& person) const
+{
+   return data_.at(person);
+}
+
+
+void RemoveZeroValue(TasksInfo& Map)
+{
+   if (Map[TaskStatus::NEW] == 0)
+   {
+      Map.erase(TaskStatus::NEW);
+   }
+   if (Map[TaskStatus::IN_PROGRESS] == 0)
+   {
+      Map.erase(TaskStatus::IN_PROGRESS);
+   }
+   if (Map[TaskStatus::TESTING] == 0)
+   {
+      Map.erase(TaskStatus::TESTING);
+   }
+   if (Map[TaskStatus::DONE] == 0)
+   {
+      Map.erase(TaskStatus::DONE);
+   }
+}
+
+
+tuple<TasksInfo, TasksInfo>
+TeamTasks::PerformPersonTasks(
+               const string& person,
+               int task_count)
+{
+   TasksInfo updatedTasks;
+   TasksInfo actualTasks = data_[person];
+   TasksInfo untouchedTasks = data_[person];
+
+   while (task_count)
+   {
+      if (untouchedTasks.count(TaskStatus::NEW) > 0 && untouchedTasks[TaskStatus::NEW] > 0)
+      {
+         updatedTasks[TaskStatus::IN_PROGRESS] += 1;
+         untouchedTasks[TaskStatus::NEW] -= 1;
+         actualTasks[TaskStatus::NEW] -= 1;
+         actualTasks[TaskStatus::IN_PROGRESS] += 1;
+      }
+      else if (untouchedTasks.count(TaskStatus::IN_PROGRESS) > 0 && untouchedTasks[TaskStatus::IN_PROGRESS] > 0)
+      {
+         updatedTasks[TaskStatus::TESTING] += 1;
+         untouchedTasks[TaskStatus::IN_PROGRESS] -= 1;
+         actualTasks[TaskStatus::IN_PROGRESS] -= 1;
+         actualTasks[TaskStatus::TESTING] += 1;
+      }
+      else if (untouchedTasks.count(TaskStatus::TESTING) > 0 && untouchedTasks[TaskStatus::TESTING] > 0)
+      {
+         updatedTasks[TaskStatus::DONE] += 1;
+         untouchedTasks[TaskStatus::TESTING] -= 1;
+         actualTasks[TaskStatus::TESTING] -= 1;
+         actualTasks[TaskStatus::DONE] += 1;
+      }
+
+      --task_count;
+   }
+
+   untouchedTasks[TaskStatus::DONE] = 0;
+   RemoveZeroValue(untouchedTasks);
+   RemoveZeroValue(updatedTasks);
+   RemoveZeroValue(actualTasks);
+
+   data_[person] = actualTasks;
+
+   return std::make_tuple(updatedTasks, untouchedTasks);
+}
+
+
+// Принимаем словарь по значению, чтобы иметь возможность
+// обращаться к отсутствующим ключам с помощью [] и получать 0,
+// не меняя при этом исходный словарь
+void
+PrintTasksInfo(TasksInfo tasks_info)
+{
+   cout << tasks_info[TaskStatus::NEW] << " new tasks" <<
+      ", " << tasks_info[TaskStatus::IN_PROGRESS] << " tasks in progress" <<
+      ", " << tasks_info[TaskStatus::TESTING] << " tasks are being tested" <<
+      ", " << tasks_info[TaskStatus::DONE] << " tasks are done" << endl;
+}
+
+int main()
+{
+   TasksInfo info{
+        {TaskStatus::NEW,1},
+        {TaskStatus::IN_PROGRESS,4},
+        {TaskStatus::TESTING,4},
+        {TaskStatus::DONE,5}
+    };
+
+   TeamTasks tasks;
+   tasks.data_["Ivan"] = info;
+
+   TasksInfo updated_tasks, untouched_tasks;
+   tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Ivan", 17);
+
+   PrintTasksInfo(updated_tasks);
+   PrintTasksInfo(untouched_tasks);
+
+  return 0;
 }

@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 
 project(Draft C CXX)
 
+# Устанавливаем 17-й стандарт C++
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Выходные директории
 set(DRAFT_PATH "${CMAKE_CURRENT_LIST_DIR}")
 set(OUTPUT_DIR "${DRAFT_PATH}/Output")
@@ -18,3 +22,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Bin)
 
 add_subdirectory(SimpleTasks)
 add_subdirectory(YandexDb)
+
+set(CMAKE_PREFIX_PATH "C:/Program Files (x86)/googletest-distribution")
+
+
+# Находим библиотеки Google Test
+find_package(GTest REQUIRED)
