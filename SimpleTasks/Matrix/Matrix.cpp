@@ -5,12 +5,6 @@
 
 using namespace std;
 
-// Реализуйте здесь
-// * класс Matrix
-// * оператор ввода для класса Matrix из потока istream
-// * оператор вывода класса Matrix в поток ostream
-// * оператор проверки на равенство двух объектов класса Matrix
-// * оператор сложения двух объектов класса Matrix
 
 class Matrix
 {
@@ -18,28 +12,39 @@ public:
 
    Matrix(int num_rows = 0, int num_columns = 0)
    {
-      // if (num_rows != 0)
-      // {
-         data_.resize(num_rows);
-         for (size_t i = 0; i < num_rows; ++i)
-         {
-            data_[i].resize(num_columns);
-         }
-      // }
+      Reset(num_rows, num_columns);
+   }
+
+
+   void Reset(int num_rows, int num_columns)
+   {
+      if (num_rows < 0)
+      {
+         throw std::out_of_range("num_rows must be > 0");
+      }
+      if (num_columns < 0)
+      {
+         throw std::out_of_range("num_columns must be > 0");
+      }
+      if (num_columns == 0 || num_rows == 0)
+      {
+         num_columns = num_rows = 0;
+      }
+
+      data_.assign(num_rows, std::vector<int>(num_columns));
    }
 
 
    int& At(size_t row, size_t column)
    {
-      return data_[row][column];
+      return data_.at(row).at(column);
    }
 
 
    int At(size_t row, size_t column) const
    {
-      return data_[row][column];
+      return data_.at(row).at(column);
    }
-
 
 
    int GetNumRows() const
@@ -70,17 +75,15 @@ std::istream& operator>>(std::istream& in, Matrix& matrix)
 
    in >> num_rows >> num_columns;
 
-   Matrix new_matrix(num_rows, num_columns);
-   
+   matrix.Reset(num_rows, num_columns);
+
    for (int i = 0; i < num_rows; ++i)
    {
       for (int j = 0; j < num_columns; ++j)
       {
-         in >> new_matrix.At(i, j);
+         in >> matrix.At(i, j);
       }
    }
-
-   matrix = new_matrix;
 
    return in;
 }
@@ -96,25 +99,65 @@ std::ostream& operator<<(std::ostream& out, const Matrix& matrix)
       {
          out << matrix.At(i, j) << " ";
       }
-      std::cout << std::endl;
+      if (i != matrix.GetNumRows() - 1)
+      {
+         out << std::endl;
+      }
    }
 
    return out;
 }
 
 
+bool operator==(const Matrix& lhs, const Matrix& rhs)
+{
+   if ((lhs.GetNumRows() != rhs.GetNumRows()) || (lhs.GetNumColumns() != rhs.GetNumColumns()))
+   {
+      return false;
+   }
+
+   for (size_t i = 0; i < lhs.GetNumRows(); ++i)
+   {
+      for (size_t j = 0; j < lhs.GetNumColumns(); ++j)
+      {
+         if (lhs.At(i,j) != rhs.At(i,j))
+         {
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
+
+
+Matrix operator+(const Matrix& lhs, const Matrix& rhs)
+{
+   if (lhs.GetNumRows() != rhs.GetNumRows())
+   {
+      throw invalid_argument("Mismatched number of rows");
+   }
+   if (lhs.GetNumColumns() != rhs.GetNumColumns())
+   {
+      throw invalid_argument("Mismatched number of columns");
+   }
+
+   Matrix matrix(lhs.GetNumRows(), lhs.GetNumColumns());
+   for (size_t i = 0; i < lhs.GetNumRows(); ++i)
+   {
+      for (size_t j = 0; j < rhs.GetNumColumns(); ++j)
+      {
+         matrix.At(i,j) = lhs.At(i,j) + rhs.At(i,j);
+      }
+   }
+
+   return matrix;
+}
+
+
 int main()
 {
-   // Matrix a(2, 3);
-   Matrix a;
-   std::cin >> a;
-   std::cout << a << std::endl;
 
 
-//   Matrix one;
-//   Matrix two;
-
-//   cin >> one >> two;
-//   cout << one + two << endl;
-  return 0;
+   return 0;
 }
