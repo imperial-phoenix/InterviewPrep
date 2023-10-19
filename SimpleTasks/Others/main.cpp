@@ -1052,23 +1052,10 @@ PrintTasksInfo(TasksInfo tasks_info)
       ", " << tasks_info[TaskStatus::DONE] << " tasks are done" << endl;
 }
 
+
 int main()
 {
-   TasksInfo info{
-        {TaskStatus::NEW,1},
-        {TaskStatus::IN_PROGRESS,4},
-        {TaskStatus::TESTING,4},
-        {TaskStatus::DONE,5}
-    };
 
-   TeamTasks tasks;
-   tasks.data_["Ivan"] = info;
-
-   TasksInfo updated_tasks, untouched_tasks;
-   tie(updated_tasks, untouched_tasks) = tasks.PerformPersonTasks("Ivan", 17);
-
-   PrintTasksInfo(updated_tasks);
-   PrintTasksInfo(untouched_tasks);
 
   return 0;
 }

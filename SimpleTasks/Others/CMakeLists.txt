@@ -6,7 +6,7 @@ set(HEADERS_LIST)
 
 # Исходные файлы
 set(SOURCES_LIST
-   main.cpp)
+   phone_number.cpp)
 
 # Создание исполняемого файла
 add_executable(${TARGET_NAME} ${HEADERS_LIST} ${SOURCES_LIST})
