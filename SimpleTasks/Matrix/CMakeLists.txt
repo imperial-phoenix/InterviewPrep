@@ -4,8 +4,6 @@ set(TARGET_NAME Matrix)
 set(HEADERS_LIST)
 
 # Исходные файлы
-set(SOURCES_LIST
-   Matrix.cpp)
+set(SOURCES_LIST)
 
-# Создание исполняемого файла
-add_executable(${TARGET_NAME} ${HEADERS_LIST} ${SOURCES_LIST})
+add_subdirectory(Test)
