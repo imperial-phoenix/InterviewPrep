@@ -6,3 +6,6 @@ add_executable(${TARGET_NAME} MatrixTest.cpp)
 
 # Подключаем тестируемую библиотеку.
 target_link_libraries(${TARGET_NAME} PRIVATE Matrix)
+
+# Подключаем GoogleTest
+target_link_libraries(${TARGET_NAME} PRIVATE gtest gtest_main)

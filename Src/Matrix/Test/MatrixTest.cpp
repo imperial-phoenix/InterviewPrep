@@ -3,11 +3,17 @@
 
 #include <iostream>
 
+#include "gtest/gtest.h"
+
 #include "Matrix.hpp"
 
-
-int main()
+TEST(MyTestSuite, MyTestCase)
 {
-   Matrix matrix{2, 2, {1, 2, 3, 4}};
-   std::cout << matrix << std::endl;
+   ASSERT_EQ(1, 1);
+}
+
+int main(int argc, char** argv)
+{
+   ::testing::InitGoogleTest(&argc, argv);
+   return RUN_ALL_TESTS();
 }
