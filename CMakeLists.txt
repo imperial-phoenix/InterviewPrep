@@ -20,11 +20,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DEBUG_DIR}/Bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Bin)
 
-add_subdirectory(SimpleTasks)
-add_subdirectory(YandexDb)
-
-set(CMAKE_PREFIX_PATH "C:/Program Files (x86)/googletest-distribution")
-
-
-# Находим библиотеки Google Test
-find_package(GTest REQUIRED)
+add_subdirectory(Src)
