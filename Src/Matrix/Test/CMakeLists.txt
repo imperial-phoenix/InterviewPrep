@@ -9,3 +9,6 @@ target_link_libraries(${TARGET_NAME} PRIVATE Matrix)
 
 # Подключаем GoogleTest
 target_link_libraries(${TARGET_NAME} PRIVATE gtest gtest_main)
+
+# Автоматическое обнаружение и добавление тестов в пакет тестов CTest.
+gtest_discover_tests(${TARGET_NAME})

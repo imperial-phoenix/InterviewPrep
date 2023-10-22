@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(Draft C CXX)
 
-# Устанавливаем 17-й стандарт C++
+# Устанавливаем 17-й стандарт C++.
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -19,6 +19,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DEBUG_DIR}/Lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DEBUG_DIR}/Bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Bin)
+
+# Активация CTest
+enable_testing()
+
+# Загружаем модуль CMake "GoogleTest".
+include(GoogleTest)
 
 add_subdirectory(External/GoogleTest)
 add_subdirectory(Src)
