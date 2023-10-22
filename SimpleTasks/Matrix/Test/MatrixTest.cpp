@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "../Matrix.hpp"
+#include "Matrix.hpp"
+
 
 int main()
 {
