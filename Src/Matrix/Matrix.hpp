@@ -4,8 +4,10 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
-#include <iostream>
 #include <initializer_list>
+#include <iostream>
+#include <random>
+#include <type_traits>
 
 ///////////////////////////////////////////////////////////////////////////////
 ///                           MATRIX DECLARATION                            ///
@@ -19,6 +21,17 @@ public:
       std::size_t Rows,
       std::size_t Columns,
       std::initializer_list<T> InitList);
+
+   Matrix(
+      std::size_t Rows,
+      std::size_t Columns,
+      T MinValue,
+      T MaxValue);
+
+   Matrix(
+      std::size_t Rows,
+      std::size_t Columns,
+      T Value = T{});
 
    std::size_t GetRowsCount() const { return rows_; }
 
@@ -43,6 +56,13 @@ operator << (
    const Matrix<T>& Matrix);
 
 
+// template <typename T>
+// Matrix<T>
+// operator * (
+//    const Matrix<T>& Lhs,
+//    const Matrix<T>& Rhs);
+
+
 ///////////////////////////////////////////////////////////////////////////////
 ///                         MATRIX IMPLEMENTATION                           ///
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +82,61 @@ Matrix<T>::Matrix(
       data_[index] = value;
       ++index;
    }
+}
 
+
+template <typename T>
+Matrix<T>::Matrix(
+   std::size_t Rows,
+   std::size_t Columns,
+   T MinValue,
+   T MaxValue)
+   :  rows_{Rows},
+      columns_{Columns},
+      data_{new T[Rows * Columns]}
+{
+   std::default_random_engine generator;
+   std::conditional_t<
+               std::is_floating_point<T>::value,
+               std::uniform_real_distribution<T>,
+               std::uniform_int_distribution<T>>
+   distribution{MinValue, MaxValue};
+
+   for (std::size_t i = 0; i < Rows; ++i)
+   {
+      for (std::size_t j = 0; j < Columns; ++j)
+      {
+         std::size_t index = i * Rows + j;
+         if (i <= j)
+         {
+            data_[index] = distribution(generator);
+         }
+         else
+         {
+            data_[index] = 0;
+         }
+      }
+   }
+}
+
+
+template <typename T>
+Matrix<T>::Matrix(
+   std::size_t Rows,
+   std::size_t Columns,
+   T Value)
+   :  rows_{Rows},
+      columns_{Columns},
+      data_{new T[Rows * Columns]}
+{
+   for (std::size_t i = 0; i < Rows; ++i)
+   {
+      for (std::size_t j = 0; j < Columns; ++j)
+      {
+         std::size_t index = i * Rows + j;
+         data_[index] = Value;
+      }
+   }
 }
 
 
@@ -102,5 +176,26 @@ operator << (
 
    return Out;
 }
+
+
+// template <typename T>
+// Matrix<T>
+// operator * (
+//    const Matrix<T>& Lhs,
+//    const Matrix<T>& Rhs)
+// {
+//    Matrix<T> result(Lhs.GetRowsCount(), Rhs.GetColumnsCount());
+
+//    for (std::size_t i = 0; i < Lhs.GetRowsCount(); ++i)
+//    {
+//       for (std::size_t j = 0; j < Rhs.GetColumnsCount(); ++j)
+//          for (std::size_t z = 0; z < Lhs.GetColumnsCount(); ++z)
+//          {
+//             result.At(i, j) += Lhs.At(i, z) * Rhs.At(z, j);
+//          }
+//    }
+
+//    return result;
+// }
 
 #endif // __MATRIX_H__
