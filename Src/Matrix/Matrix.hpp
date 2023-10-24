@@ -33,6 +33,8 @@ public:
       std::size_t Columns,
       T Value = T{});
 
+   ~Matrix() { delete[] data_; }
+
    std::size_t GetRowsCount() const { return rows_; }
 
    std::size_t GetColumnsCount() const { return columns_; }
