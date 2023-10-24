@@ -37,11 +37,18 @@ public:
    Matrix(
       const Matrix& Other);
 
+   Matrix(
+      Matrix&& Other);
+
    ~Matrix() { delete[] data_; }
 
    Matrix<T>&
    operator=(
       const Matrix<T>& Rhs);
+
+   Matrix<T>&
+   operator=(
+      Matrix<T>&& Rhs);
 
    std::size_t GetRowsCount() const { return rows_; }
 
@@ -161,6 +168,17 @@ Matrix<T>::Matrix(
 
 
 template <typename T>
+Matrix<T>::Matrix(
+   Matrix&& Other)
+{
+   rows_ = Other.rows_;
+   columns_ = Other.columns_;
+   data_ = Other.data_;
+   Other.data_ = nullptr;
+}
+
+
+template <typename T>
 Matrix<T>&
 Matrix<T>::operator=(
    const Matrix<T>& Rhs)
@@ -171,6 +189,19 @@ Matrix<T>::operator=(
    columns_ = Rhs.columns_;
    data_ = new T[rows_ * columns_];
    std::memcpy(data_, Rhs.data_, sizeof(T) * rows_ * columns_);
+
+   return *this;
+}
+
+template <typename T>
+Matrix<T>&
+Matrix<T>::operator=(
+   Matrix<T>&& Rhs)
+{
+   rows_ = Rhs.rows_;
+   columns_ = Rhs.columns_;
+   data_ = Rhs.data_;
+   Rhs.data_ = nullptr;
 
    return *this;
 }
