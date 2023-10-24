@@ -4,6 +4,7 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
+#include <cstring>
 #include <initializer_list>
 #include <iostream>
 #include <random>
@@ -33,7 +34,14 @@ public:
       std::size_t Columns,
       T Value = T{});
 
+   Matrix(
+      const Matrix& Other);
+
    ~Matrix() { delete[] data_; }
+
+   Matrix<T>&
+   operator=(
+      const Matrix<T>& Rhs);
 
    std::size_t GetRowsCount() const { return rows_; }
 
@@ -56,7 +64,6 @@ std::ostream&
 operator << (
    std::ostream& Out,
    const Matrix<T>& Matrix);
-
 
 // template <typename T>
 // Matrix<T>
@@ -139,6 +146,33 @@ Matrix<T>::Matrix(
          data_[index] = Value;
       }
    }
+}
+
+
+template <typename T>
+Matrix<T>::Matrix(
+   const Matrix<T>& Other)
+{
+   rows_ = Other.rows_;
+   columns_ = Other.columns_;
+   data_ = new T[rows_ * columns_];
+   std::memcpy(data_, Other.data_, sizeof(T) * rows_ * columns_);
+}
+
+
+template <typename T>
+Matrix<T>&
+Matrix<T>::operator=(
+   const Matrix<T>& Rhs)
+{
+   delete[] data_;
+
+   rows_ = Rhs.rows_;
+   columns_ = Rhs.columns_;
+   data_ = new T[rows_ * columns_];
+   std::memcpy(data_, Rhs.data_, sizeof(T) * rows_ * columns_);
+
+   return *this;
 }
 
 

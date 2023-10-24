@@ -131,6 +131,77 @@ TEST(MatrixConstructorTest, UpperTriangularMatrixConstructor)
 
 
 ///////////////////////////////////////////////////////////////////////////////
+//////////////////       Matrix<T>::Matrix(Matrix<T>&)       //////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+TEST(MatrixConstructorTest, CopyConstructor)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 4;
+   const std::size_t columns = 4;
+   std::initializer_list<int> initList{
+      1,    2,    3,    4,
+      5,    6,    7,    8,
+      9,    10,   11,   12,
+      13,   14,   15,   16
+   };
+
+   Matrix firstMatrix{rows, columns, initList};
+
+   /*** Act ***/
+   Matrix secondMatrix{firstMatrix};
+
+   /*** Assert ***/
+   EXPECT_EQ(firstMatrix.GetRowsCount(), secondMatrix.GetRowsCount());
+   EXPECT_EQ(firstMatrix.GetColumnsCount(), secondMatrix.GetColumnsCount());
+
+   for (std::size_t i = 0; i < rows; ++i)
+   {
+      for (std::size_t j = 0; j < columns; ++j)
+      {
+         EXPECT_EQ(secondMatrix.At(i,j), firstMatrix.At(i, j));
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////    Matrix<T>& Matrix<T>::operator=(const Matrix<T>&)    ///////////
+///////////////////////////////////////////////////////////////////////////////
+
+TEST(MatrixOperatorsTest, CopyAssignmentOperator)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 4;
+   const std::size_t columns = 4;
+   std::initializer_list<int> initList{
+      1,    2,    3,    4,
+      5,    6,    7,    8,
+      9,    10,   11,   12,
+      13,   14,   15,   16
+   };
+
+   Matrix firstMatrix{rows, columns, initList};
+   Matrix<int> secondMatrix{rows, columns};
+
+   /*** Act ***/
+   secondMatrix = firstMatrix;
+
+   /*** Assert ***/
+   EXPECT_EQ(firstMatrix.GetRowsCount(), secondMatrix.GetRowsCount());
+   EXPECT_EQ(firstMatrix.GetColumnsCount(), secondMatrix.GetColumnsCount());
+
+   for (std::size_t i = 0; i < rows; ++i)
+   {
+      for (std::size_t j = 0; j < columns; ++j)
+      {
+         EXPECT_EQ(secondMatrix.At(i,j), firstMatrix.At(i, j));
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////        main       //////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
