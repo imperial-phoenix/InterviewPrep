@@ -131,7 +131,7 @@ TEST(MatrixConstructorTest, UpperTriangularMatrixConstructor)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//////////////////       Matrix<T>::Matrix(Matrix<T>&)       //////////////////
+////////////////      Matrix<T>::Matrix(const Matrix<T>&)      ////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 TEST(MatrixConstructorTest, CopyConstructor)
@@ -160,6 +160,35 @@ TEST(MatrixConstructorTest, CopyConstructor)
       for (std::size_t j = 0; j < columns; ++j)
       {
          EXPECT_EQ(secondMatrix.At(i,j), firstMatrix.At(i, j));
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////       Matrix<T>::Matrix(Matrix<T>&&)       //////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+TEST(MatrixConstructorTest, MoveConstructor)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 100;
+   const std::size_t columns = 250;
+   const int value = 55;
+   Matrix firstMatrix{rows, columns, value};
+
+   /*** Act ***/
+   Matrix secondMatrix{std::move(firstMatrix)};
+
+   /*** Assert ***/
+   EXPECT_EQ(rows, secondMatrix.GetRowsCount());
+   EXPECT_EQ(columns, secondMatrix.GetColumnsCount());
+
+   for (std::size_t i = 0; i < rows; ++i)
+   {
+      for (std::size_t j = 0; j < columns; ++j)
+      {
+         EXPECT_EQ(secondMatrix.At(i,j), value);
       }
    }
 }
@@ -196,6 +225,36 @@ TEST(MatrixOperatorsTest, CopyAssignmentOperator)
       for (std::size_t j = 0; j < columns; ++j)
       {
          EXPECT_EQ(secondMatrix.At(i,j), firstMatrix.At(i, j));
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////    Matrix<T>& Matrix<T>::operator=(Matrix<T>&)    //////////////
+///////////////////////////////////////////////////////////////////////////////
+
+TEST(MatrixOperatorsTest, MoveAssignmentOperator)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 4;
+   const std::size_t columns = 4;
+   const int value = 55;
+
+   Matrix firstMatrix{rows, columns, value};
+
+   /*** Act ***/
+   Matrix secondMatrix = std::move(firstMatrix);
+
+   /*** Assert ***/
+   EXPECT_EQ(secondMatrix.GetRowsCount(), rows);
+   EXPECT_EQ(secondMatrix.GetColumnsCount(), columns);
+
+   for (std::size_t i = 0; i < rows; ++i)
+   {
+      for (std::size_t j = 0; j < columns; ++j)
+      {
+         EXPECT_EQ(secondMatrix.At(i,j), value);
       }
    }
 }
