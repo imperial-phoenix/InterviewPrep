@@ -17,8 +17,8 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Send Telegram Notification on Push
-          uses: appleboy/telegram-action@master
-          with:
-            to: ${{ secrets.TELEGRAM_CHAT_ID }}
-            token: ${{ secrets.TELEGRAM_TOKEN }}
-            message: "🚨 Build failed for ${{ github.repository }}!"
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "🚨 Build failed for ${{ github.repository }}!"
