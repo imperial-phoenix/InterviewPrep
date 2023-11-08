@@ -1,2 +1,3 @@
+add_subdirectory(Array)
 add_subdirectory(Matrix)
 add_subdirectory(YandexCourse)
