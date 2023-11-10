@@ -170,6 +170,65 @@ public:
       return data_[Index];
    }
 
+   reference
+   at(
+      size_type Index)
+   {
+      if (Index >= N)
+      {
+         throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
+      }
+
+      return data_[Index];
+   }
+
+   const_reference
+   at(
+      size_type Index) const
+   {
+      if (Index >= N)
+      {
+         throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
+      }
+
+      return data_[Index];
+   }
+
+   pointer
+   data() noexcept
+   {
+      return data_;
+   }
+
+   const_pointer
+   data() const noexcept
+   {
+      return data_;
+   }
+
+   reference
+   front() noexcept
+   {
+      return *begin();
+   }
+
+   const_reference
+   front() const noexcept
+   {
+      return *begin();
+   }
+
+   reference
+   back() noexcept
+   {
+      return N ? *(end() - 1) : *end();
+   }
+
+   const_reference
+   back() const noexcept
+   {
+      return N ? *(end() - 1) : *end();
+   }
 
    T data_[N];
 };
@@ -191,6 +250,34 @@ bool
 operator!=(const Array<T, N>& Lhs, const Array<T, N>& Rhs)
 {
    return !(Lhs == Rhs);
+}
+
+template <typename T, std::size_t N>
+bool
+operator<(const Array<T,N>& Lhs, const Array<T,N>& Rhs)
+{
+   return std::lexicographical_compare(Lhs.begin(), Lhs.end(), Rhs.begin(), Rhs.end());
+}
+
+template <typename T, std::size_t N>
+bool
+operator>(const Array<T,N>& Lhs, const Array<T,N>& Rhs)
+{
+   return Rhs < Lhs;
+}
+
+template <typename T, std::size_t N>
+bool
+operator<=(const Array<T,N>& Lhs, const Array<T,N>& Rhs)
+{
+   return !(Lhs > Rhs);
+}
+
+template <typename T, std::size_t N>
+bool
+operator>=(const Array<T,N>& Lhs, const Array<T,N>& Rhs)
+{
+   return !(Lhs < Rhs);
 }
 
 }
