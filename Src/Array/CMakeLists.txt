@@ -7,6 +7,9 @@ add_library(${TARGET_NAME} INTERFACE)
 # Set C++20.
 target_compile_features(${TARGET_NAME} INTERFACE cxx_std_20)
 
+# Add compilation warnings.
+target_compile_options(${TARGET_NAME} INTERFACE -Wall -Wextra -Wpedantic)
+
 # Set path to the header files.
 target_include_directories(${TARGET_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
