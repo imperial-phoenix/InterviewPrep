@@ -22,6 +22,19 @@ TEST(ArrayTest, ImplicitCtor)
    EXPECT_EQ(memcmp(expected, array.data(), sizeof(int) * size), 0);
 }
 
+TEST(ArrayTest, ZeroArray)
+{
+   /*** Arrange ***/
+   const std::size_t size = 0;
+
+   /*** Act ***/
+   Containers::Array<int, size> array;
+
+   /*** Assert ***/
+   EXPECT_EQ(array.size(), 0);
+   EXPECT_EQ(array.begin(), array.end());
+}
+
 TEST(ArrayTest, RandomAccess)
 {
    /*** Arrange ***/
