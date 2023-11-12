@@ -59,6 +59,15 @@ public:
       std::size_t Row,
       std::size_t Column) const;
 
+   T&
+   At(
+      std::size_t Row,
+      std::size_t Column);
+
+   Matrix<T>
+   Multiplication_2(
+      const Matrix<T>& Rhs);
+
 private:
    std::size_t rows_;
    std::size_t columns_;
@@ -77,6 +86,13 @@ operator << (
 // operator * (
 //    const Matrix<T>& Lhs,
 //    const Matrix<T>& Rhs);
+
+
+template <typename T>
+Matrix<T>
+Multiplication_1(
+   const Matrix<T>& M1,
+   const Matrix<T>& M2);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -217,6 +233,16 @@ Matrix<T>::At(
 }
 
 
+template <typename T>
+T&
+Matrix<T>::At(
+   std::size_t Row,
+   std::size_t Column)
+{
+   return data_[Row * rows_ + Column];
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
@@ -264,5 +290,61 @@ operator << (
 
 //    return result;
 // }
+
+
+template <typename T>
+Matrix<T>
+Multiplication_1(
+   const Matrix<T>& Lhs,
+   const Matrix<T>& Rhs)
+{
+   Matrix<T> result(Lhs.GetRowsCount(), Rhs.GetColumnsCount());
+
+   for (std::size_t i = 0; i < Lhs.GetRowsCount(); ++i)
+   {
+      for (std::size_t j = 0; j < Rhs.GetColumnsCount(); ++j)
+      {
+         for (std::size_t z = 0; z < Lhs.GetColumnsCount(); ++z)
+         {
+            result.At(i, j) += Lhs.At(i, z) * Rhs.At(z, j);
+         }
+      }
+   }
+
+   return result;
+}
+
+
+template <typename T>
+Matrix<T>
+Matrix<T>::Multiplication_2(
+   const Matrix<T>& Rhs)
+{
+   Matrix<T> result(GetRowsCount(), Rhs.GetColumnsCount());
+
+   for (std::size_t i = 0; i < GetRowsCount(); ++i)
+   {
+      // Адрес на первый элемент в строке.
+      T* currentResultBlock = result.data_ + i * GetRowsCount();
+      for (std::size_t j = 0; j < Rhs.GetColumnsCount(); ++j)
+      {
+         currentResultBlock[j] = T{};
+      }
+
+      for (std::size_t k = 0; k < Rhs.GetColumnsCount(); ++k)
+      {
+         T* currentRhsBlock = Rhs.data_ + k * Rhs.GetColumnsCount();
+         T currentValueLhs = data_[i * columns_ + k];
+
+         for (std::size_t j = 0; j < Rhs.GetColumnsCount(); ++j)
+         {
+            currentResultBlock[j] += currentValueLhs * currentRhsBlock[j];
+         }
+      }
+
+   }
+
+   return result;
+}
 
 #endif // __MATRIX_H__

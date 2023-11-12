@@ -261,6 +261,44 @@ TEST(MatrixOperatorsTest, MoveAssignmentOperator)
 
 
 ///////////////////////////////////////////////////////////////////////////////
+///////////////////////        Multiplications        /////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+TEST(MultiplicationTest, Multiplication_1)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 2152;
+   const std::size_t columns = 2152;
+   Matrix firstMatrix{rows, columns, 1};
+   Matrix secondMatrix{rows, columns, 1};
+
+   /*** Act ***/
+   Matrix result = Multiplication_1(firstMatrix, secondMatrix);
+
+   std::cout << result.GetRowsCount() << std::endl;
+
+   /*** Assert ***/
+}
+
+
+TEST(MultiplicationTest, Multiplication_2)
+{
+   /*** Arrange ***/
+   const std::size_t rows = 2152;
+   const std::size_t columns = 2152;
+   Matrix firstMatrix{rows, columns, 1};
+   Matrix secondMatrix{rows, columns, 1};
+
+   /*** Act ***/
+   Matrix result = firstMatrix.Multiplication_2(secondMatrix);
+
+   std::cout << result.GetRowsCount() << std::endl;
+
+   /*** Assert ***/
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////        main       //////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
