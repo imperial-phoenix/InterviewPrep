@@ -15,13 +15,9 @@ include(GoogleTest)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-   message("Compiler is clang")
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
    add_compile_options(-Wall -Wextra -Wpedantic)
-   message("Compiler is gnu")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-   message("Compiler is msvc")
 endif()
 
 # Output directories for build artifacts.
@@ -50,6 +46,30 @@ if(IS_UNINITIALIZED_FOUND)
       "One or more submodules are uninitialized in ${GIT_SUBMODULE_DIR}."
       " Please initialize them: git submodule update --init")
 endif()
+
+# Sets the default build type.
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE "Debug") # Read about variable caching.
+endif()
+
+# Determines the OS type.
+if(WIN32)
+   set(OS_NAME "Windows")
+elseif(UNIX AND NOT APPLE)
+   set(OS_NAME "Linux")
+elseif(APPLE)
+   set(OS_NAME "macOS")
+else()
+   set(OS_NAME "Unknown OS")
+endif()
+
+# Build configuration information.
+message(STATUS "*================================*")
+message(STATUS "| Generator  : ${CMAKE_GENERATOR}")
+message(STATUS "| Compiler   : ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "| OS         : ${OS_NAME}")
+message(STATUS "| Build type : ${CMAKE_BUILD_TYPE}")
+message(STATUS "*================================*")
 
 add_subdirectory(External/GoogleTest)
 add_subdirectory(Src)
