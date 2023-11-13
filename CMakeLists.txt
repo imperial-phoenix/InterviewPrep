@@ -1,5 +1,7 @@
+# Sets the minimum required version of cmake for a project.
 cmake_minimum_required(VERSION 3.20)
 
+# Sets the name of the project.
 project(Draft C CXX)
 
 # Устанавливаем 17-й стандарт C++.
@@ -20,32 +22,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DEBUG_DIR}/Bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_RELEASE_DIR}/Bin)
 
-find_package(Git QUIET)
-if(GIT_FOUND)
-   execute_process(
-      COMMAND           ${GIT_EXECUTABLE} submodule status
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-      OUTPUT_VARIABLE   GIT_SUBMOD_STATUS
-      RESULT_VARIABLE   GIT_SUBMOD_STATUS_RES)
+include(BuildScripts/CheckGitSubmodules.cmake)
 
-   set(UNINITIALIZED_FOUND FALSE)
+set(GIT_SUBMODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+check_git_submodules("${GIT_SUBMODULE_DIR}" IS_UNINITIALIZED_FOUND)
 
-   if(GIT_SUBMOD_STATUS_RES EQUAL "0")
-      string(REPLACE "\n" ";" GIT_SUBMOD_STATUS_LINES "${GIT_SUBMOD_STATUS}")
-      foreach(SUBMODULE_LINE IN LISTS GIT_SUBMOD_STATUS_LINES)
-         string(REGEX MATCH "^-" IS_UNINITIALIZED "${SUBMODULE_LINE}")
-         if(IS_UNINITIALIZED)
-            string(REGEX MATCH " [^ ]+$" SUBMODULE_PATH "${SUBMODULE_LINE}")
-            message(WARNING "Uninitialized submodule: ${SUBMODULE_PATH}")
-            set(UNINITIALIZED_FOUND TRUE)
-         endif()
-      endforeach()
-
-   if(UNINITIALIZED_FOUND)
-      message(FATAL_ERROR "One or more submodules are uninitialized. Please initialize them.")
-   endif()
-
-   endif()
+if(IS_UNINITIALIZED_FOUND)
+   message(
+      FATAL_ERROR
+      "One or more submodules are uninitialized in ${GIT_SUBMODULE_DIR}."
+      " Please initialize them: git submodule update --init")
 endif()
 
 # Активация CTest
