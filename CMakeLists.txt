@@ -15,6 +15,15 @@ include(GoogleTest)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   message("Compiler is clang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+   add_compile_options(-Wall -Wextra -Wpedantic)
+   message("Compiler is gnu")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+   message("Compiler is msvc")
+endif()
+
 # Output directories for build artifacts.
 # set(DRAFT_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 set(OUTPUT_DIR "${PROJECT_SOURCE_DIR}/Output")
