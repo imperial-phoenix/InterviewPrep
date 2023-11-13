@@ -4,6 +4,8 @@
 #ifndef __ARRAY_H__
 #define __ARRAY_H__
 
+#include <algorithm> // Подумать над разделением на апи и реализацию.
+
 namespace Containers {
 
 template <typename T, std::size_t N>
