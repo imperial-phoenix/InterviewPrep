@@ -8,6 +8,10 @@
 
 namespace Containers {
 
+////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   DECLARATION   /////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
 template <typename T, std::size_t N>
 class Array
 {
@@ -37,98 +41,57 @@ public:
 
 
    ////////////////////////////////////////////////////////////////////////////
-   ///                             Operations                               ///
+   ///                              Operations                              ///
    ////////////////////////////////////////////////////////////////////////////
 
-   constexpr
    void
    fill(
-      const value_type& value)
-   {
-      std::fill_n(begin(), size(), value);
-   }
+      const value_type& value);
 
    void
-   swap(Array& other)
-   {
-      std::swap_ranges(begin(), end(), other.begin());
-   }
+   swap(
+      Array& other);
 
 
    ////////////////////////////////////////////////////////////////////////////
    ///                            Iterators                                 ///
    ////////////////////////////////////////////////////////////////////////////
 
+
    iterator
-   begin() noexcept
-   {
-      return data_;
-   }
+   begin() noexcept;
 
    const_iterator
-   begin() const noexcept
-   {
-      return data_;
-   }
+   begin() const noexcept;
 
-   iterator end() noexcept
-   {
-      return data_ + N;
-   }
+   iterator end() noexcept;
 
    const_iterator
-   end() const noexcept
-   {
-      return data_ + N;
-   }
+   end() const noexcept;
 
    reverse_iterator
-   rbegin() noexcept
-   {
-      return end();
-   }
+   rbegin() noexcept;
 
    const_reverse_iterator
-   rbegin() const noexcept
-   {
-      return end();
-   }
+   rbegin() const noexcept;
 
    reverse_iterator
-   rend() noexcept
-   {
-      return begin();
-   }
+   rend() noexcept;
 
    reverse_iterator
-   rend() const noexcept
-   {
-      return begin();
-   }
+   rend() const noexcept;
 
    const_iterator
-   cbegin() const noexcept
-   {
-      return data_;
-   }
+   cbegin() const noexcept;
 
    const_iterator
-   cend() const noexcept
-   {
-      return data_ + N;
-   }
+   cend() const noexcept;
 
    const_iterator
-   crbegin() const noexcept
-   {
-      return end();
-   }
+   crbegin() const noexcept;
 
    const_iterator
-   crend() const noexcept
-   {
-      return begin();
-   }
+   crend() const noexcept;
 
 
    ////////////////////////////////////////////////////////////////////////////
@@ -136,22 +99,13 @@ public:
    ////////////////////////////////////////////////////////////////////////////
 
    size_type
-   size() const noexcept
-   {
-      return N;
-   }
+   size() const noexcept;
 
    size_t
-   max_size() const noexcept
-   {
-      return N;
-   }
+   max_size() const noexcept;
 
    bool
-   empty() const noexcept
-   {
-      return 0 == size();
-   }
+   empty() const noexcept;
 
 
    ////////////////////////////////////////////////////////////////////////////
@@ -160,77 +114,37 @@ public:
 
    reference
    operator[](
-      size_type Index) noexcept
-   {
-      return data_[Index];
-   }
+      size_type Index) noexcept;
 
    const_reference
    operator[](
-      size_type Index) const noexcept
-   {
-      return data_[Index];
-   }
+      size_type Index) const noexcept;
 
    reference
    at(
-      size_type Index)
-   {
-      if (Index >= N)
-      {
-         throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
-      }
-
-      return data_[Index];
-   }
+      size_type Index);
 
    const_reference
    at(
-      size_type Index) const
-   {
-      if (Index >= N)
-      {
-         throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
-      }
-
-      return data_[Index];
-   }
+      size_type Index) const;
 
    pointer
-   data() noexcept
-   {
-      return data_;
-   }
+   data() noexcept;
 
    const_pointer
-   data() const noexcept
-   {
-      return data_;
-   }
+   data() const noexcept;
 
    reference
-   front() noexcept
-   {
-      return *begin();
-   }
+   front() noexcept;
 
    const_reference
-   front() const noexcept
-   {
-      return *begin();
-   }
+   front() const noexcept;
 
    reference
-   back() noexcept
-   {
-      return N ? *(end() - 1) : *end();
-   }
+   back() noexcept;
 
    const_reference
-   back() const noexcept
-   {
-      return N ? *(end() - 1) : *end();
-   }
+   back() const noexcept;
 
    T data_[N];
 };
@@ -280,6 +194,228 @@ bool
 operator>=(const Array<T,N>& Lhs, const Array<T,N>& Rhs)
 {
    return !(Lhs < Rhs);
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////   IMPLEMENTATION   ////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////
+///                             Member types                             ///
+////////////////////////////////////////////////////////////////////////////
+
+template <typename T, std::size_t N>
+void Array<T,N>::fill(const value_type& value)
+{
+   std::fill_n(begin(), size(), value);
+}
+
+template <typename T, std::size_t N>
+void Array<T,N>::swap(Array<T,N>& other)
+{
+   std::swap_ranges(begin(), end(), other.begin());
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+///                            Iterators                                 ///
+////////////////////////////////////////////////////////////////////////////
+
+template <typename T, std::size_t N>
+Array<T,N>::iterator
+Array<T,N>::begin() noexcept
+{
+   return data_;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::begin() const noexcept
+{
+   return data_;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::iterator Array<T,N>::end() noexcept
+{
+   return data_ + N;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::end() const noexcept
+{
+   return data_ + N;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reverse_iterator
+Array<T,N>::rbegin() noexcept
+{
+   return end();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_reverse_iterator
+Array<T,N>::rbegin() const noexcept
+{
+   return end();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reverse_iterator
+Array<T,N>::rend() noexcept
+{
+   return begin();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reverse_iterator
+Array<T,N>::rend() const noexcept
+{
+   return begin();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::cbegin() const noexcept
+{
+   return data_;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::cend() const noexcept
+{
+   return data_ + N;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::crbegin() const noexcept
+{
+   return end();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_iterator
+Array<T,N>::crend() const noexcept
+{
+   return begin();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+///                             Capacity                                 ///
+////////////////////////////////////////////////////////////////////////////
+
+template <typename T, std::size_t N>
+Array<T,N>::size_type
+Array<T,N>::size() const noexcept
+{
+   return N;
+}
+
+template <typename T, std::size_t N>
+size_t
+Array<T,N>::max_size() const noexcept
+{
+   return N;
+}
+
+template <typename T, std::size_t N>
+bool
+Array<T,N>::empty() const noexcept
+{
+   return 0 == size();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+///                            Element access                            ///
+////////////////////////////////////////////////////////////////////////////
+
+template <typename T, std::size_t N>
+Array<T,N>::reference
+Array<T,N>::operator[](
+   size_type Index) noexcept
+{
+   return data_[Index];
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_reference
+Array<T,N>::operator[](
+   size_type Index) const noexcept
+{
+   return data_[Index];
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reference
+Array<T,N>::at(
+   size_type Index)
+{
+   if (Index >= N)
+   {
+      throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
+   }
+   return data_[Index];
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_reference
+Array<T,N>::at(
+   size_type Index) const
+{
+   if (Index >= N)
+   {
+      throw std::out_of_range("Array::at: Index >= Array size"); // исправить текст сообщения
+   }
+   return data_[Index];
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::pointer
+Array<T,N>::data() noexcept
+{
+   return data_;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_pointer
+Array<T,N>::data() const noexcept
+{
+   return data_;
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reference
+Array<T,N>::front() noexcept
+{
+   return *begin();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_reference
+Array<T,N>::front() const noexcept
+{
+   return *begin();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::reference
+Array<T,N>::back() noexcept
+{
+   return N ? *(end() - 1) : *end();
+}
+
+template <typename T, std::size_t N>
+Array<T,N>::const_reference
+Array<T,N>::back() const noexcept
+{
+   return N ? *(end() - 1) : *end();
 }
 
 }

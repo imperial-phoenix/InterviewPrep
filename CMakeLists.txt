@@ -15,6 +15,7 @@ include(GoogleTest)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Sets global compile options.
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
    add_compile_options(-Wall -Wextra -Wpedantic)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -22,7 +23,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 
 # Output directories for build artifacts.
-# set(DRAFT_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 set(OUTPUT_DIR "${PROJECT_SOURCE_DIR}/Output")
 
 set(OUTPUT_DEBUG_DIR "${OUTPUT_DIR}/Debug")
